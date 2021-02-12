@@ -4,6 +4,24 @@ defmodule BlogWeb.PostController do
   alias Blog.Posts
   alias Blog.Posts.Post
 
+  def add_comment(conn, %{"comment" => comment_params, "post_id" => 
+  post_id}) do 
+    post = 
+      post_id
+      |> Posts.get_post!()
+      |> Repo.preload([:comments])
+    case Posts.add_comment(post_id, comment_params) do
+      {:ok, _comment} -> # -> allows us to compare a value against many patterns, pattern matching yo
+      conn
+      |> put_flash(:info, "Comment added yo")
+      |> redirect(to: Routes.post_path(conn, :show, post))
+    {:error, _error} ->
+      conn
+      |> put_flash(:error, "Comment not added, boo not cool")
+      |> redirect(to: Routes.post_path(conn, :show, post))
+    end
+  end
+
   def index(conn, _params) do
     posts = Posts.list_posts()
     render(conn, "index.html", posts: posts)
