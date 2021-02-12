@@ -17,6 +17,7 @@ defmodule BlogWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/posts", PostController
   end
 
   # Other scopes may use custom stacks.
@@ -38,5 +39,6 @@ defmodule BlogWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: BlogWeb.Telemetry
     end
+    
   end
 end
