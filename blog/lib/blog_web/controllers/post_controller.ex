@@ -49,7 +49,7 @@ defmodule BlogWeb.PostController do
   def show(conn, %{"id" => id}) do
     post = 
       id
-      |> Posts.get_post!(id)
+      |> Posts.get_post!
       |> Repo.preload([:comments])
     
     changeset = Comment.changeset(%Comment{}, %{})
@@ -57,7 +57,7 @@ defmodule BlogWeb.PostController do
   end
 
   def edit(conn, %{"id" => id}) do
-    post = Posts.get_post!
+    post = Posts.get_post!(id)
     changeset = Posts.change_post(post)
     render(conn, "edit.html", post: post, changeset: changeset)
   end
