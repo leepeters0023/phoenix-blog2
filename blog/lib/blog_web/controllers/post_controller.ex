@@ -3,6 +3,8 @@ defmodule BlogWeb.PostController do
 
   alias Blog.Posts
   alias Blog.Posts.Post
+  alias Blog.Comments.Comment
+  alias Blog.Repo
 
   def add_comment(conn, %{"comment" => comment_params, "post_id" => 
   post_id}) do 
@@ -11,7 +13,7 @@ defmodule BlogWeb.PostController do
       |> Posts.get_post!()
       |> Repo.preload([:comments])
     case Posts.add_comment(post_id, comment_params) do
-      {:ok, _comment} -> # -> allows us to compare a value against many patterns, pattern matching yo
+      {:ok, _comment} -> # -> allows us to compare a value against many patterns
       conn
       |> put_flash(:info, "Comment added yo")
       |> redirect(to: Routes.post_path(conn, :show, post))
@@ -45,12 +47,17 @@ defmodule BlogWeb.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Posts.get_post!(id)
-    render(conn, "show.html", post: post)
+    post = 
+      id
+      |> Posts.get_post!(id)
+      |> Repo.preload([:comments])
+    
+    changeset = Comment.changeset(%Comment{}, %{})
+    render(conn, "show.html", post: post, changeset: changeset)
   end
 
   def edit(conn, %{"id" => id}) do
-    post = Posts.get_post!(id)
+    post = Posts.get_post!
     changeset = Posts.change_post(post)
     render(conn, "edit.html", post: post, changeset: changeset)
   end

@@ -21,6 +21,12 @@ defmodule Blog.Posts do
     Repo.all(Post)
   end
 
+  def add_comment(post_id, comment_params) do
+    comment_params
+    |> Map.put("post_id", post_id)
+    |> Comments.create_comment()
+  end
+
   @doc """
   Gets a single post.
 
